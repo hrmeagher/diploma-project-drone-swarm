@@ -122,7 +122,7 @@ class DroneServer(socketserver.BaseRequestHandler):
 
         LOGGER.info(f"Sent Response: {response}")
 
-        state_thread = threading.Thread(target=self.send_state_information())
+        state_thread = threading.Thread(target=self.send_state_information)
         state_thread.daemon = True
         state_thread.start()
 
@@ -135,13 +135,19 @@ class ThreadedUDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
 
 if __name__ == "__main__":
 
+    # 10.25.35.127
     print("WELCOME TO MOCK xDRONE: \nI pretend to be a drone so you don't have to.")
     # 8999 is NOT the default Tello drone port. Update tello.py accordingly
-    HOST, PORT = "127.0.0.1", 8999
+    HOST, PORT = "127.0.0.1", 8889
+    print(f"Connection attempt. Host: {HOST}, Port: {PORT}")
     server = ThreadedUDPServer((HOST, PORT), DroneServer)
+    print(f"Connection established with {server.server_address}")
     with server:
+        print(f"Server running.")
         ip, port = server.server_address
-        server_thread = threading.Thread(target=server.serve_forever())
+        print(f"{ip}, {port}")
+        server_thread = threading.Thread(target=server.serve_forever)
+        print(f"Server threaded: {server_thread.name}")
         server_thread.daemon = True
         server_thread.start()
         print("Server loop running in thread:", server_thread.name)
